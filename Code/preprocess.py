@@ -3,6 +3,7 @@ import random
 import numpy as np
 from PIL import Image
 from sklearn.model_selection import train_test_split
+from hyperparams import *
 
 class ArtDataPreprocessor:
     """ Class for preprocessing the WikiArt dataset for art classification. """
@@ -26,7 +27,10 @@ class ArtDataPreprocessor:
                 continue
             
             images = [f for f in os.listdir(class_dir) if f.endswith('.jpg')]
-            images = [os.path.join(class_dir, img) for img in images]\
+            images = [os.path.join(class_dir, img) for img in images]
+
+            random.shuffle(images)
+            images = images[:IMG_PER_CLASS]
 
             # split into train and test
             train_imgs, test_imgs = train_test_split(images, test_size=test_size, random_state=random_state)
@@ -36,7 +40,7 @@ class ArtDataPreprocessor:
 
         return train_data, test_data
 
-    def preprocess_image(self, image_path, target_size=(224, 224)):
+    def preprocess_image(self, image_path, target_size=(IMG_X, IMG_Y)):
         """ Preprocess image for deep learning model input. """
         img = Image.open(image_path)
         img = img.convert('RGB')  # ensure 3 channels if image is GS
